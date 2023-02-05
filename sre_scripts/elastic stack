@@ -1,0 +1,49 @@
+Elastic Stack:
+--------------
+it is a group of products that can reliably and securely take data from any source, in any format, then search, analyze, and visualize it in real-time. Elasticsearch is a distributed, RESTful search and analytics engine that can address a huge number of use cases. Also considered as the heart of the Elastic Stack, it centrally stores user data for high-efficiency search, excellent relevancy, and powerful analytics that is highly scalable.
+
+Core Products of Elastic Stack:
+------------------------------
+The core products that define an Elastic stack are listed below:
+
+Elastic Search – Search and analytics engine.
+Logstash – Data processing pipeline.
+Kibana – Dashboard to visualize data. 
+
+Challenges and Solutions: 
+-------------------------
+* What happens in very large companies you get data from different places in different formats. It can be JSON or XML whatever. So we need one mechanism to get whole data in one place and also in one format. So for that, we use Logstash. 
+* Now when we get data we need to arrange data in a systematic order, so we can evaluate the things very easily. Also, we want to analyze the data, in that case, First, go through with data very quickly. For that we have Elasticsearch. Elasticsearch is developed in Java and is released as open-source under the terms of the Apache License. (Apache License it is a open source server which is fast text reader)
+* Now after completing this, we need a visualization platform where we can show our data analytics. There Kibana comes into the picture. That is how the whole Elastic stack worked. For better Business insights.
+
+image:
+-----
+* https://media.geeksforgeeks.org/wp-content/uploads/20200728122427/gog111.png
+* this image tell complete info about elastic stack
+
+Architecture of Elastic Search:
+------------------------------
+Cluster:
+------- 
+* In Elasticsearch, we store our data in nodes, there can be n number of nodes in a machine. And each node is related to the cluster. So the Cluster is a set of nodes.
+ 
+Documents:
+---------- 
+* You store your data as documents which are JSON objects. So how these data organized in the cluster? The answer is indices. In the world of relational databases, documents can be compared to a row in a table.
+ 
+Index:
+----- 
+* Elasticsearch Indices are logical partitions of documents and can be compared to a database in the world of relational databases.
+ 
+Types:
+-----
+ * Each index has one or more mapping types that are used to divide documents into a logical group. It can be compared to a table in the world of relational databases. 
+Every document is stored as an index. The index you can say is the collection of documents. That has similar characteristics for instance, the Department will have A index, and Employees have B index i.e they are logically related.
+ 
+Sharding 
+a) Sharding is just a way to divided index into smaller pieces. 
+b) Each piece is known as a shard. 
+c) Sharding is done at an index level.
+Shard is just like an index. For scalability. With sharding, you can store billions of documents within the one index. There are also Replicas as well but for now, it is well enough for us to start and understand Elasticsearch. So let’s move further towards building and search engine.
+1. Managing Documents 
+Before that, get the Elasticsearch package manager.

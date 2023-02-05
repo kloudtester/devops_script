@@ -1,0 +1,13 @@
+If we want to excute the playbook in different cloud then we have to follow the steps
+Ansible is a configuration management and automation tool that can be used to manage multiple cloud environments. To execute Ansible tasks on multiple clouds, you can use dynamic inventory and cloud modules.
+
+Dynamic inventory allows you to automatically pull information about your cloud resources, such as servers, into Ansible. You can then use cloud modules, such as the ec2 module for AWS or the azure module for azure, to manage these resources.
+
+Here is an example of how to use Ansible to create an EC2 instance on AWS and a azure instance on azure Cloud:
+
+Create a dynamic inventory file, such as inventory/aws_ec2.yml and inventory/az.yml, that contains the information about your AWS and azure resources respectively.
+
+Create a playbook, such as playbook.yml, that uses the ec2 and gce modules to create the instances.
+
+Run the playbook with the dynamic inventory file:
+You can also use Ansible's multi-cloud support to manage resources across multiple cloud providers in a single playbook. You can use the include_vars module to include vars file for each cloud provider, use when clause to specify the action should be taken on which cloud provider.

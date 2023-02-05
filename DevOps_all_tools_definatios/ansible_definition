@@ -1,0 +1,28 @@
+Ansible:
+------- 
+ * IT automation tool for automating cloud provisioning, configuration management, and application deployment.
+Sub-topics:
+----------
+ * Playbooks, Modules, Inventory, Variables, Tasks, Roles, Templates, Facts.
+
+Ansible Playbook:
+ ---------------- 
+ * A file written in YAML format, used to define workflows executed by Ansible.
+Modules:
+-------
+ * Pre-written code snippets that can be used to perform specific tasks in Ansible playbooks.
+Inventory: 
+---------
+ * File or script defining the list of target systems for Ansible to manage.
+Tasks:
+------
+ * Units of action in an Ansible playbook that perform specific operations on managed systems.
+Roles:
+-----
+ * A way to organize and reuse Ansible tasks and playbooks.
+Templates:
+---------
+ * Ansible templates use Jinja2 syntax to create dynamic content from variables.
+Facts:
+------
+ * Variables automatically gathered by Ansible from managed systems, used to inform playbook execution

@@ -1,0 +1,100 @@
+---
+- name: installing_tomcat_ubuntu
+  hosts: all
+  become: yes
+  vars:
+    java_package: openjdk-11-jdk
+    group_name: tomcat
+    user_name: tomcat
+    shell: /bin/flase
+    home: /opt/tomcat
+    url: https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.85/bin/apache-tomcat-8.5.85.tar.gz
+    dest: /tmp/
+  tasks:
+    - name: installing_java
+      ansible.builtin.package:
+          name: "{{ java_package }}"
+          state: present     
+    - name: adding_group
+      ansible.builtin.group:
+        name: "{{ group_name }}"
+        state: present
+    - name: adding_user
+      ansible.builtin.user:
+        name: "{{ user_name }}"
+        shell: "{{ shell }}"
+        group: "{{ group_name }}"
+        home: "{{ home }}" 
+        create_home: yes
+        state: present
+    - name: installing_tomcat
+      ansible.builtin.get_url:
+        url: "{{ url }}"
+        dest: "{{ dest }}"
+        group: "{{ group_name }}"
+        owner: "{{ user_name }}"
+    - name: untar_tomcat
+      ansible.builtin.unarchive:
+        src: /tmp/apache-tomcat-8.5.85.tar.gz
+        dest: "{{ dest }}"
+        remote_src: yes
+    - name: copying_tomcat_opt
+      ansible.builtin.copy:
+        src: /tmp/apache-tomcat-8.5.85/
+        dest: /opt/tomcat/
+        owner: "{{ user_name }}"
+        group: "{{ group_name }}"
+        mode: '0777'
+        remote_src: yes
+    - name: changing_permissions
+      ansible.builtin.file:
+        path: /opt/tomcat/
+        recurse: true
+        owner: "{{ user_name }}"
+        group: "{{ group_name }}"
+        mode: '777'
+    - name: copying files from local
+      ansible.builtin.copy:
+        src: /home/sai/users.xml
+        dest: /opt/tomcat/conf/tomcat-users.xml
+        owner: "{{ user_name}}"
+        group: "{{ group_name }}"
+        remote_src: no
+        mode: '777'
+    - name: copying files from local
+      ansible.builtin.copy:
+        src: /home/sai/context.xml
+        dest: /opt/tomcat/webapps/manager/META-INF/context.xml
+        owner: "{{ user_name}}"
+        group: "{{ group_name }}"
+        remote_src: no
+        mode: '777'
+    - name: copying files from local
+      ansible.builtin.copy:
+        src: /home/sai/hostmanager-context.xml
+        dest:  /opt/tomcat/webapps/host-manager/META-INF/context.xml
+        owner: "{{ user_name}}"
+        group: "{{ group_name }}"
+        remote_src: no
+        mode: '777'
+    - name: copying files from local
+      ansible.builtin.copy:
+        src: /home/sai/tomcat.service
+        dest: /etc/systemd/system/tomcat.service
+        owner: "{{ user_name}}"
+        group: "{{ group_name }}"
+        remote_src: no
+        mode: '777'
+    - name: daemon_reload
+      ansible.builtin.systemd:
+        name: tomcat
+        state: started
+        enabled: yes
+      
+      
+        
+        
+         
+
+      
+

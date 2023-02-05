@@ -1,0 +1,26 @@
+k8s installing using azure cli follow command:
+  * az group create --name myResourceGroup --location eastus
+  * az aks create -g myResourceGroup -n myAKSCluster --enable-managed-identity --node-count 1 --enable-addons monitoring --enable-msi-auth-for-monitoring  --generate-ssh-keys
+  * az aks get-credentials --resource-group myResourceGroup --name myAKSCluster
+while installing k8s by using azure cli command make sure that u r local system should have azure-cli installed in it if not use this command to install azure cli 
+  * az aks install-cli 
+if u r using chocolatey software use this command 
+  * choco install azure-cli 
+after applying all this command k8s cluster will created login into azure portal and search kubernetes services then it will show the k8s service 
+open it and click on connect and past the first 2 command to connect with k8s cluster 
+
+
+k8s pod creation:
+after connecting the cluster when we want to create the pods then use this command 
+  * kubectl apply -f <filename> 
+we u want to see the deatils of created pod use this command 
+  * kubectl get pods -o wide
+if u want see the complete detalis of u r pod then use this command 
+  * kubectl describe pod <pod name>
+if u want to see the api resoucres in the cluster then use this command 
+  * kubectl api-resources <we will see the short name for the resources>
+using this command to get nodes in the cluster
+  * kubectl get nodes
+if u want to login into the container present in the pod use this command 
+  * kubectl exec -it <podname> -- /bin/bash
+ 

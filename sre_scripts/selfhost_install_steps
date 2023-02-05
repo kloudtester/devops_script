@@ -1,0 +1,89 @@
+Installing steps:
+ commands to follow
+ * wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
+ * sudo apt-get install apt-transport-https 
+ * echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+ * sudo apt-get update && sudo apt-get install elasticsearch -y
+ * After applying this commands it will generate some file copy that file and store a side
+ ---
+ --------------------------- Security autoconfiguration information ------------------------------
+
+Authentication and authorization are enabled.
+TLS for the transport and HTTP layers is enabled and configured.
+
+The generated password for the elastic built-in superuser is : 5Lj*B8rQDo2Pc5tIi9v_
+
+If this node should join an existing cluster, you can reconfigure this with
+'/usr/share/elasticsearch/bin/elasticsearch-reconfigure-node --enrollment-token <token-here>'
+after creating an enrollment token on your existing cluster.
+
+You can complete the following actions at any time:
+
+Reset the password of the elastic built-in superuser with
+'/usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic'.
+
+Generate an enrollment token for Kibana instances with
+ '/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana'.
+
+Generate an enrollment token for Elasticsearch nodes with
+'/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s node'.
+
+-------------------------------------------------------------------------------------------------
+### NOT starting on installation, please execute the following statements to configure elasticsearch service to start automatically using systemd
+ sudo systemctl daemon-reload
+ sudo systemctl enable elasticsearch.service
+### You can start elasticsearch service by executing
+ sudo systemctl start elasticsearch.service
+Scanning processes...
+Scanning linux images...
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+---
+* after use this command to start the elasticsearch
+* sudo systemctl daemon-reload
+* sudo systemctl enable elasticsearch.service
+* sudo systemctl start elasticsearch.service
+* lets use this curl command to access the elasticsearch
+* curl --insecure -u <username>:<we have to give the password> that was present in the above file https://localhost:9200
+* elasticsearch port number is 9200
+* if we done all good then u will recive this response
+---
+* sudo curl --insecure -u elastic:5Lj*B8rQDo2Pc5tIi9v_ https://localhost:9200
+{
+  "name" : "ip-172-31-15-217",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "k5x-Wh5iQ4aFgtmgsntKXg",
+  "version" : {
+    "number" : "8.6.0",
+    "build_flavor" : "default",
+    "build_type" : "deb",
+    "build_hash" : "f67ef2df40237445caa70e2fef79471cc608d70d",
+    "build_date" : "2023-01-04T09:35:21.782467981Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.4.2",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+---
+* now install kibana use this command <if we going to install kibana on the vm where the elasticsearch is present>
+* sudo apt-get update && sudo apt-get install kibana
+* after this we want to generate the token for kibana<command is present in the above file>
+* sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana 
+* kibana port is 5601
+* then it will generate the token and palce that token in the /etc/kibana/kibana.yml file
+* change server.host "<0.0.0.0>"
+* after apply this command again
+* sudo systemctl daemon-reload
+* sudo systemctl enable kibana.service
+* sudo systemctl start kibana.service
+* after generate the verfication token <type whereis kibana> then it will show the kibana path then enter into bin folder 

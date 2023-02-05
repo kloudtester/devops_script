@@ -1,0 +1,88 @@
+- name: installing_nop
+  become: yes
+  hosts: all
+  vars:
+    url_deb: https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+    dest_path: /home/sai/
+    dpkg: /home/sai/packages-microsoft-prod.deb
+    path: /var/www
+    src: /home/sai/default
+    dest: /etc/nginx/sites-available/default
+    src_service_file: /home/sai/nopCommerce.service
+    service_dest: /etc/systemd/system/nopCommerce.service
+    dotnet_package:
+    - dotnet-sdk-7.0
+    - aspnetcore-runtime-7.0
+    - dotnet-runtime-7.0
+    - nginx
+    - unzip
+    nop_url: https://github.com/nopSolutions/nopCommerce/releases/download/release-4.60.1/nopCommerce_4.60.1_NoSource_linux_x64.zip
+  tasks:
+  - name: downloading_deb_package
+    get_url:
+      url: "{{ url_deb }}"
+      dest: "{{ dest_path }}"
+  - name: installing_deb_package
+    apt:
+      deb: "{{ dpkg }}"
+      update_cache: yes
+      state: present
+  - name: installing_dotnet
+    apt:
+      name: "{{ dotnet_package }}"
+      state: present
+  - name: deman_reload_nginx
+    systemd:
+      daemon_reload: yes
+      name: nginx
+      state: started
+      enabled: yes
+  - name: copy_default_file
+    copy:
+      src: "{{ src }}"
+      dest: "{{ dest }}"
+      remote_src: yes
+  - name: creating_folder
+    file:
+      path: "{{ path }}/nopCommerce"
+      state: directory
+      recurse: yes
+      group: www-data
+      owner: www-data
+      mode: '777'
+  - name: downloading_nop_file
+    get_url:
+      url: "{{ nop_url }}"
+      dest: /var/www/nopCommerce
+  - name: unzip_nop_file
+    unarchive:
+      src: /var/www/nopCommerce/nopCommerce_4.60.1_NoSource_linux_x64.zip
+      dest: /var/www/nopCommerce
+      remote_src: yes
+  - name: creating_log_bin_folder
+    file:
+      name:
+        - bin 
+        - logs
+      state: directory
+  - name: ceating_service_file
+    copy:
+      src: "{{ src_service_file }}"
+      dest: "{{ service_dest }}"
+      remote_src: yes
+  - name: deman_reload_nop
+    systemd:
+      daemon_reload: yes
+      name: nopCommerce.service
+      state: started
+      enabled: yes
+  - name: deman_reload_nginx
+    systemd:
+      daemon_reload: yes
+      name: nginx
+      enabled: yes
+      state: restarted
+
+
+
+

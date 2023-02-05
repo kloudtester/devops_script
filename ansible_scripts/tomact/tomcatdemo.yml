@@ -1,0 +1,104 @@
+---
+  - name: installing_tomact
+    hosts: all
+    become: yes
+    vars:
+      group_name: tomcat
+      home: /opt/tomcat
+      user_name: tomcat
+      shell: /bin/false
+      url: https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.85/bin/apache-tomcat-8.5.85.tar.gz
+      dest: /tmp/
+    tasks:
+      - name: installing_java
+        ansible.builtin.apt:
+          name: openjdk-11-jdk
+          update_cache: yes
+          state: present
+      - name: installing_java_complated
+        ansible.builtin.debug:
+          msg: installing_java_complated  
+      - name: adding_group
+        ansible.builtin.group:
+          name: "{{ group_name }}"
+          state: present  
+      - name: adding_group_complated
+        ansible.builtin.debug:
+          msg: adding_group_complated 
+      - name: adding_user
+        ansible.builtin.user:
+          create_home: yes
+          group: "{{ group_name }}"
+          home : "{{ home }}"
+          name: "{{ user_name }}"
+          shell: "{{ shell }}"
+          state: present
+      - name: adding_user_complated
+        ansible.builtin.debug:
+          msg: adding_user_complated
+      - name: downloading_tomcat
+        ansible.builtin.get_url:
+          dest: "{{dest}}"
+          group: "{{ group_name }}"
+          mode: '777'
+          owner: "{{ user_name}}"
+          url: "{{ url }}"
+      - name: downloading_tomcat_complated
+        ansible.builtin.debug:
+          msg: downloading_tomcat_complated
+      - name: Extract_tomcat
+        ansible.builtin.unarchive:
+          src: /tmp/apache-tomcat-8.5.85.tar.gz 
+          dest: "{{ dest }}"
+          group: "{{ group_name }}"
+          owner: "{{ user_name }}"
+          remote_src: true
+      - name: untar_tomact_complated
+        ansible.builtin.debug:
+          msg: untar_tomcat_complated
+      - name: copying_tomcat_opt
+        ansible.builtin.copy:
+          dest: /opt/tomcat/
+          group: "{{ group_name }}"
+          mode: '777'
+          owner: "{{ user_name }}"
+          remote_src: yes
+          src: /tmp/apache-tomcat-8.5.85/
+      - name: copying_complated
+        ansible.builtin.debug:
+          msg: copying_complated
+      - name: Change file ownership, group and permissions
+        ansible.builtin.file:
+          path: /opt/tomcat/
+          owner: "{{ user_name }}"
+          group: "{{ group_name }}"
+          mode: '777'
+          recurse: true
+      - name: permission_complated
+        ansible.builtin.debug:
+          msg: permission_complated
+      - name: copying_local_tomcat.service
+        ansible.builtin.copy:
+          src: /home/sai/tomcat.service
+          dest: /etc/systemd/system/tomcat.service
+          owner: "{{ group_name }}"
+          group: "{{ user_name }}"
+          mode: '777'
+      - name: copying_local_tomcat_complated
+        ansible.builtin.debug:
+          msg: copying_local_tomcat_complated
+      - name: Make sure a service unit is running
+        ansible.builtin.systemd:
+          state: started
+          name: tomcat
+          enabled: yes
+          daemon_reload: yes
+
+    
+
+
+      
+
+
+
+

@@ -1,0 +1,7 @@
+[appserver]
+172.31.6.227 java_package=java-11-openjdk-devel
+172.173.202.217 java_package=openjdk-11-jdk
+
+[appserver:vars]
+
+

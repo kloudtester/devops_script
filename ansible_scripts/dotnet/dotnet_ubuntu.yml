@@ -1,0 +1,15 @@
+---
+  - name: installing_dotnet_ubuntu
+    become: yes
+    hosts: all
+    vars:
+      donet_package: dotnet-sdk-6.0
+    tasks:
+      - name: instaiing_dotnet
+        ansible.builtin.apt:
+          name: "{{ dotnet_package }}"
+          update_cache: yes
+          state: present
+      - name: installing_donet_completed
+        ansible.builtin.debug:
+          msg: installing_donet_completed

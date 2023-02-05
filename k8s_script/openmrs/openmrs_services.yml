@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: openmrs-services
+spec:
+  type: LoadBalancer
+  selector:
+    name: openmrs-application
+  ports:
+     - name: openmrs-services
+       targetPort: 8080
+       port: 35000

@@ -1,0 +1,20 @@
+---
+  - name: installing_nodejs
+    become: yes
+    hosts: all
+    vars:
+      package: 
+        - nodejs
+        - npm
+      version: "18"
+    tasks:
+      - name: geting_url
+        ansible.builtin.get_url:
+          url: "https://deb.nodesource.com/setup_{{version}}.x"
+          dest: /tmp/nodesource_setup.sh
+          mode: '777'
+      - name: installing_nodejs
+        ansible.builtin.apt:
+          name: "{{ package }}"
+          state: present
+          update_cache: yes

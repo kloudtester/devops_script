@@ -1,0 +1,45 @@
+Ansible installing steps:
+
+1.fisrt we have to create 2 vms and create user with password in both vm (use same users in both vms)
+2.next give the sudoers permission to that user in both vms 
+3.next choose one and install ansible in that vm by using using this command
+--- 
+sudo apt -y install software-properties-common -y
+sudo apt-add-repository ppa:ansible/ansible -y
+sudo apt install ansible -y
+---
+4.next add same user in both master and node
+     * sudo adduser <username>
+     * sudo visudo <sai ALL=(ALL:ALL) NOPASSWD:ALL> this step will give under sudo 
+     * sudo vi /etc/ssh/shhd_config <enable password authentication to yes>
+     * sudo systemctl restart sshd
+5.next in master vm create hosts file it also called as inventry file and add content 2 vm private ip and save the file and login by using created user 
+     * command: ssh <created username@master vm publicip>
+6.next generate the ssh key in master vm by using this command 
+     * ssh-keygen 
+7.copy the generated ssh key to 2 vm by using this command 
+     * ssh-copy-id <privateip of 2 vm>
+8.next check master is talking with workernode by using this command 
+     * ansible -i hosts -m ping all (or) -k all 
+9.next try to connect the 2 vm through master vm by using this command 
+     * ssh <created user>@workernode privateip
+
+
+
+Creating playbook in ansible:
+
+
+1.first create file with extesion of .yml (or) .yaml
+2.for example if you want to install apache2 in ubuntu this is the playbook 
+ 
+  - name: basic_file
+    become: yes
+    hosts: all
+    tasks: 
+      - name: installing apache2
+        ansible.builtin.apt:
+          name: apache2
+          state: present
+3.here we the module apt beacuse ubuntu is use the apt package repo so we are using apt module <ansible.builtin.apt:> after this module name must be equal to u installing package name 
+4.after creating the playbook file first use this command to check the syntax
+    * ansible-playbook -i hosts --syntax-check <playbook file name>  

@@ -1,0 +1,127 @@
+- name: demo
+  become: yes
+  hosts: all
+  vars:
+    java: openjdk-11-jdk
+    url: https://download.jboss.org/wildfly/16.0.0.Final/wildfly-16.0.0.Final.tar.gz
+    dest: /tmp/
+    group_name: wildfly
+    user_name: wildfly
+    shell: /sbin/nologin
+    home: /opt/wildfly
+  tasks:
+  - name: installing_java
+    ansible.builtin.apt:
+    notify: installing_java_completed
+      name: "{{ java }}"
+      update_cache: true
+      state: present
+  - name: installing_java_completed
+    ansible.builtin.debug:
+      msg: installing_java_completed
+  - name: downloading_wildfly_file
+    ansible.builtin.get_url:
+      url: "{{ url }}"
+      dest: "{{ dest }}"
+  - name: downloading_wildfly_completed
+    ansible.builtin.debug:
+      msg: downloading_wildfly_completed
+  - name: wildfly_file_unziping
+    ansible.builtin.unarchive:
+      src: /tmp/wildfly-16.0.0.Final.tar.gz
+      dest: "{{ dest }}"
+      remote_src: yes
+  - name: Unarchive wildfly file
+    ansible.builtin.debug:
+      msg: Unarchive_wildfly_file_completed
+  - name: creating_wildfly_group
+    ansible.builtin.group:
+      name: "{{ group_name }}"
+      state: present
+  - name: creating_wildfly_group
+    ansible.builtin.debug:
+      msg: wildfly_group_completed
+  - name: creating_wildfly_user
+    ansible.builtin.user:
+      name: "{{ user_name }}"
+      create_home: yes
+      group: "{{ group_name }}"
+      home: "{{ home }}"
+      shell: "{{ shell }}"
+  - name: creating_wildfly_user
+    ansible.builtin.debug:
+      msg: wildfly_user_completed
+  - name: copying_wildfly_opt
+    ansible.builtin.copy:
+      src: /tmp/wildfly-16.0.0.Final/
+      dest: /opt/wildfly
+      owner: "{{ user_name }}"
+      group: "{{ group_name }}"
+      mode: '777'
+      remote_src: yes
+  - name: cpoying_file_opt
+    ansible.builtin.debug:
+      msg: copying_completed
+  - name: changing_permissions
+    ansible.builtin.file:
+      path: /opt/wildfly
+      recurse: true
+      owner: "{{ user_name }}"
+      group: "{{ group_name }}"
+      mode: '777'
+  - name: changing_permissions
+    ansible.builtin.debug:
+      msg: permission_completed
+  - name: creating_dir_wildfly
+    ansible.builtin.file:
+      path: /etc/wildfly
+      state: directory
+      mode: '777'
+  - name: creating_dir_etc
+    ansible.builtin.debug:
+      msg: ceating_dir_completed
+  - name: copying_file_wildfly.conf
+    ansible.builtin.copy:
+      src: /opt/wildfly/docs/contrib/scripts/systemd/wildfly.conf
+      dest: /etc/wildfly/
+      owner: "{{ user_name}}"
+      group: "{{ group_name}}"
+      remote_src: yes
+      mode: '777'
+  - name: copying_file_launch.sh
+    ansible.builtin.copy:
+      src: /opt/wildfly/docs/contrib/scripts/systemd/launch.sh
+      dest: /opt/wildfly/bin/
+      owner: "{{ user_name}}"
+      group: "{{ group_name}}"
+      remote_src: yes
+      mode: '777'
+  - name: changing file ownerships
+    ansible.builtin.file:
+      path: /opt/wildfly/bin/
+      owner: "{{ user_name }}"
+      group: "{{ group_name }}"
+      recurse: yes
+      mode: '777'
+      state: directory
+  - name: copying_file_wildfly.service
+    ansible.builtin.copy:
+      src: /opt/wildfly/docs/contrib/scripts/systemd/wildfly.service
+      dest: /etc/systemd/system/
+      owner: "{{ user_name}}"
+      group: "{{ group_name}}"
+      remote_src: yes
+      mode: '777'
+  - name: copying files from local
+    ansible.builtin.copy:
+      src: /home/sai/wildfly.service
+      dest: /etc/systemd/system/wildfly.service
+      owner: "{{ user_name}}"
+      group: "{{ group_name }}"
+      remote_src: no
+      mode: '777'
+  - name: start service
+    ansible.builtin.systemd:
+      name: wildfly
+      state: started
+      enabled: yes

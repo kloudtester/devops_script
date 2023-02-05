@@ -1,0 +1,43 @@
+--- 
+  - name: installing_dotnet_ubuntu
+    hosts: all
+    become: yes
+    vars:
+      dotnet_url: https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+      dest: /home/sai
+      dotnet_package: 
+        - apt-transport-https
+        - dotnet-runtime-7.0
+        - dotnet-sdk-7.0
+        - aspnetcore-runtime-7.0
+    tasks: 
+      - name: installing_wget
+        ansible.builtin.apt:
+          name: wget
+          state: present
+          update_cache: yes
+      - name: installing_wget_completed
+        ansible.builtin.debug:
+          msg: installing_wget_completed
+      - name: downloading_dotnet
+        ansible.builtin.get_url:
+          url: "{{ dotnet_url }}"
+          dest: "{{ dest }}/packages-microsoft-prod.deb"
+          owner: sai
+          mode: '777'
+      - name: dpkg_dotnet
+        ansible.builtin.apt:
+          deb: "{{dest }}/packages-microsoft-prod.deb"
+          state: present
+      - name: installing_dpkg_completed
+        ansible.builtin.debug:
+          msg: installing_dpkg_completed
+      - name: installing_dotnet
+        ansible.builtin.apt:
+           name: "{{ dotnet_package }}"
+           state: present
+           update_cache: yes
+      - name: installing_dotnet_completed
+        ansible.builtin.debug:
+          msg: installing_dotnet_completed
+        

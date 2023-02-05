@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gameoflife-pod
+spec:
+  minReadySeconds: 5
+  replicas: 4
+  selector:
+    matchLabels:
+      name: gameoflife-application
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+       maxSurge: 25%
+       maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        name: gameoflife-application
+    spec:
+      containers:
+        - image: krishnatester/game:3.0
+          name: gameoflife-deployment
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+           - name: MYSQL_ROOT_PASSWORD
+             value: 'rootroot'
+           - name: MYSQL_DATABASE
+             value: 'gameoflife'
+           - name: MYSQL_USER
+             value: qtdevops
+           - name: MYSQL_PASSWORD
+             value: qtdevops
+          resources:
+            requests:
+              memory: "256Mi"
+            limits:
+              memory: "512Mi"
+          livenessProbe:
+             httpGet:
+               path: /gameoflife
+               port: 8080
+             initialDelaySeconds: 5
+             periodSeconds: 10
+          readinessProbe:
+             tcpSocket:
+               port: 8080
+          

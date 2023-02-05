@@ -1,0 +1,95 @@
+---
+  - name: wildfly_on_ubuntu
+    become: yes
+    hosts: all
+    tasks: 
+      - name: installing wildfly_on_ubuntu
+        ansible.builtin.apt:
+            name: openjdk-11-jdk
+            update_cache: yes
+            state: present
+      - name: wget_module
+        ansible.builtin.get_url:
+          url: https://download.jboss.org/wildfly/16.0.0.Final/wildfly-16.0.0.Final.tar.gz
+          dest: /opt  
+      - name: extract wildfly
+        ansible.builtin.unarchive:  
+          src: https://download.jboss.org/wildfly/16.0.0.Final/wildfly-16.0.0.Final.tar.gz
+          dest: /opt
+          remote_src: yes 
+      - name: moving file 
+        ansible.builtin.copy:
+          src: /opt/wildfly-16.0.0.Final
+          dest: /opt/wildfly
+          remote_src: yes
+      - name: create a wildfly group
+        ansible.builtin.group:
+          name: wildfly
+          state: present    
+      - name: create a wildfly user
+        ansible.builtin.user:
+          name: wildfly
+          create_home: yes
+          group: wildfly
+          home: /opt/wildfly
+          shell: /sbin/nologin
+          state: present
+      - name: change permissions
+        ansible.builtin.file:
+          dest: /opt/wildfly
+          recurse: true
+          owner: wildfly
+          group: wildfly
+          state: directory
+      - name: add execute permissions 
+        ansible.builtin.file:
+          mode: o+x
+          owner: wildfly
+          group: wildfly
+          path: /opt/wildfly/bin/
+      - name: creating file for systemd wildfly
+        ansible.builtin.file:
+          recurse: yes
+          path: /etc/wildfly
+          state: directory
+          mode: '777'
+      - name: copying file    
+        ansible.builtin.copy:
+          src:  /opt/wildfly/wildfly-16.0.0.Final/docs/contrib/scripts/systemd/wildfly.conf 
+          dest: /etc/wildfly/
+          owner: wildfly
+          group: wildfly
+          mode: '777'
+          remote_src: yes
+      - name: copying file systemd launch.sh
+        ansible.builtin.copy:
+          src:  /opt/wildfly/wildfly-16.0.0.Final/docs/contrib/scripts/systemd/launch.sh 
+          dest: /opt/wildfly/bin/
+          owner: wildfly
+          group: wildfly
+          mode: '777'
+          remote_src: yes    
+      - name: change permissions
+        ansible.builtin.file:
+          dest: /opt/wildfly/wildfly-16.0.0.Final/bin/launch.sh
+          recurse: true
+          mode: 777
+          owner: wildfly
+          group: wildfly
+          state: directory   
+      - name: copying file systemd wildfly.service
+        ansible.builtin.copy:
+          src:  /opt/wildfly/wildfly-16.0.0.Final/docs/contrib/scripts/systemd/wildfly.service 
+          dest: /etc/systemd/system/
+          remote_src: yes
+      - name: copying file systemd wildfly.service
+        ansible.builtin.copy:
+          src:  /home/sai/sai 
+          dest: /etc/systemd/system/wildfly.service
+          remote_src: no
+      - name: reload daemon and start wildfly
+        ansible.builtin.systemd:
+          name: wildfly.service
+          daemon_reload: yes
+          enabled: yes
+          state: started

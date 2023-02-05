@@ -1,0 +1,17 @@
+  - name: basic_file_2
+    become: yes
+    hosts: all
+    tasks: 
+      - name: installing php 
+        ansible.builtin.apt:
+          name: 
+            - apache2
+            - php 
+            - libapache2-mod-php 
+            - php-mysql
+          update_cache: yes
+      - name: copying the files
+        ansible.builtin.copy:
+          src: /home/sai/info.php
+          dest: /var/www/html/info.php
+

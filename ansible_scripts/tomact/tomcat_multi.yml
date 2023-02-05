@@ -1,0 +1,70 @@
+---
+  - name: installing_tomcat_on_multi_os
+    become: yes
+    hosts: appserver
+    vars:
+      group_name: tomcat
+      user_name: tomcat
+      dest: /tmp/
+      dest_url: /opt/tomcat
+      url: https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.85/bin/apache-tomcat-8.5.85.tar.gz
+      home_path: /opt/tomcat
+      shell_path: /bin/false
+    tasks: 
+      - name: installing_java
+        ansible.builtin.package:
+          name: "{{ java_package }}"
+          state: present
+      - name: creating_group
+        ansible.builtin.group:
+          name: "{{ group_name }}"
+          state: present
+      - name: creating_user
+        ansible.builtin.user:
+          create_home: yes
+          group: "{{ group_name }}"
+          home: "{{ home_path }}"
+          name: "{{ user_name }}"
+          shell: "{{ shell_path }}"
+          state: present
+      - name: downloading_tomcat
+        ansible.builtin.get_url:
+          dest: "{{ dest }}"
+          group: "{{ group_name }}"
+          owner: "{{ user_name }}"
+          url: "{{ url }}"
+          mode: '777'
+      - name: unarchive_tomcat
+        ansible.builtin.unarchive:
+          dest: "{{ dest }}"
+          group: "{{ group_name }}"
+          mode: '777'
+          owner: "{{ user_name }}"
+          remote_src: yes
+          src: /tmp/apache-tomcat-8.5.85.tar.gz
+      - name: copying_tomcat_opt
+        ansible.builtin.copy:
+          src: /tmp/apache-tomcat-8.5.85/
+          dest: /opt/tomcat/
+          owner: "{{ user_name }}"
+          group: "{{ group_name }}"
+          mode: '0777'
+          remote_src: yes
+      - name: creating_link
+        ansible.builtin.file:
+          src: "{{dest_url}}/apache-tomcat-8.5.85}}"
+          dest: "{{ dest_url}}/latest}}"
+          owner: "{{ user_name }}"
+          group: "{{ group_name }}"
+          force: yes
+          state: link
+      - name: change_permission
+        ansible.builtin.file:
+          path: "{{ dest_url }}"
+          owner: "{{ user_name }}"
+          group: "{{ group_name }}"
+          mode: '777'
+          recurse: true
+      - name: adding_command
+        ansible.builtin.command: "sudo sh -c 'chmod +x /opt/tomcat/latest/bin/*.sh'"
+

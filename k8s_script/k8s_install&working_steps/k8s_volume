@@ -1,0 +1,16 @@
+when we want to create any storage in k8s there are some types
+       * volume
+       * Ephemeral volume
+       * persistent volume
+Volume:
+this volume is depend on the lifecycle of pod
+Ephemeral volume:
+this also temporary volume used for container require any persistent volume when they restart or create 
+the volume will be same .
+it is only present when pod is running
+persistent volume:
+it is another type of volume which is not depend on the lifecycle of pod 
+it uses the storage classes of azure or aws 
+when we claim any storage class in any cloud that will managaes the storage 
+it is automatically craeated cloud controller <when we use k8s as a services>
+if we use manual k8s config <we have to assign it>

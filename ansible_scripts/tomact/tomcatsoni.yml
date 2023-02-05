@@ -1,0 +1,22 @@
+--- 
+  - name: installing_tomcat
+    become: yes
+    hosts:
+    vars:
+      java: openjdk-11-jdk
+      user: tomcat 
+      shell: /bin/false
+      home_path: /opt/tomcat
+    tasks:
+      - name: installing_java
+        apt:
+          name: "{{ java }}"
+          update_cache: yes
+          state: present 
+      - name: creating_user
+        user: 
+          owner: "{{ user }}" 
+          create_home: yes
+          home: "{{ home_path }}"
+          shell: "{{ shell }}"
+      - name: 7

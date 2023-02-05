@@ -1,0 +1,30 @@
+- name: installing_dontnet_centos
+  hosts: all
+  become: yes
+  vars:
+    dotnet_url: https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
+    dest_path: /tmp/packages-microsoft-prod.rpm
+    command: 
+      - dotnet-sdk-7.0
+  tasks:
+  - name: installing_wget
+    ansible.builtin.yum:
+      name: wget
+      state: present
+      update_cache: yes
+  - name: downloading_dotnet
+    ansible.builtin.get_url:
+      url: "{{ dotnet_url }}"
+      dest: "{{ dest_path }}"
+      owner: sai
+      mode: '777'
+  - name: installing_dontnet
+    ansible.builtin.yum:
+      name: "{{ dest_path }}"
+      state: present
+      update_cache: yes
+  - name: installing_dontnet
+    ansible.builtin.yum:
+      name: "{{ command }}"
+      state: present
+      update_cache: yes

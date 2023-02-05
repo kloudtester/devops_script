@@ -1,0 +1,59 @@
+install k8s: 
+
+ ### install docker in all vms
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh 
+## install go as a root user
+git clone https://github.com/Mirantis/cri-dockerd.git
+wget https://storage.googleapis.com/golang/getgo/installer_linux
+chmod +x ./installer_linux
+./installer_linux
+source ~/.bash_profile
+cd cri-dockerd
+mkdir bin
+go build -o bin/cri-dockerd
+mkdir -p /usr/local/bin
+install -o root -g root -m 0755 bin/cri-dockerd /usr/local/bin/cri-dockerd
+cp -a packaging/systemd/* /etc/systemd/system
+sed -i -e 's,/usr/bin/cri-dockerd,/usr/local/bin/cri-dockerd,' /etc/systemd/system/cri-docker.service
+systemctl daemon-reload
+systemctl enable cri-docker.service
+systemctl enable --now cri-docker.socket
+
+## install kubeadm as non root user 
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
+ echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list && \
+  apt-get update -q && \
+  apt-get install -y kubelet=1.25.0-00 kubeadm=1.25.0-00 kubectl=1.25.0-00
+ apt-mark hold kubelet kubeadm kubectl
+
+##### to create network use this command as a root user
+
+kubeadm init --pod-network-cidr=10.244.0.0/16 --cri-socket=unix:///var/run/cri-dockerd.sock
+
+##### apply this command as a non root user 
+kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/v0.20.2/Documentation/kube-flannel.yml
+
+
+#### apply command this commands in master node as a non root user 
+
+ mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  
+#####
+ apply this command in worker node as a root user to join the worker nodes
+ 
+ 
+ kubeadm join 172.31.2.141:6443 --token df2zk0.voqzer15k4fam51u \
+        --discovery-token-ca-cert-hash sha256:d5ae3bddf0e3fc29b827e15adf4d963b57635f35ab056bc8dc3ed10b7803da4d --cri-socket "unix:///var/run/cri-dockerd.sock"
+ 
+ 
+
+
+kubeadm join 172.31.7.36:6443 --token rmmuyt.m5fnwk4egcgl7fh3 \
+        --discovery-token-ca-cert-hash sha256:7ff823dd201060d2e9461af687c44472a888acf175e9bc6e3f4bec13afc706df  --cri-socket "unix:///var/run/cri-dockerd.sock"
+		
+		
+		

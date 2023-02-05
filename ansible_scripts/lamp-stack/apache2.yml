@@ -1,0 +1,8 @@
+  - name: basic_file
+    become: yes
+    hosts: all
+    tasks: 
+      - name: installing apache2
+        ansible.builtin.apt:
+          name: apache2
+          state: present
