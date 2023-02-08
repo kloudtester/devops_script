@@ -2,7 +2,8 @@ Ansible:
 ------- 
  * IT automation tool for automating cloud provisioning, configuration management, and application deployment.
 
-![preview]C:\Users\pamid\OneDrive\Desktop\devops_script\DevOps_all_tools_definatios\ansible_mindmap\Ansible-Mindmap.xmind
+![preview](C:\Users\pamid\OneDrive\Desktop\devops_script\DevOps_all_tools_definatios\ansible_mindmap\ansible-1.png)
+
 
 Sub-topics:
 ----------
