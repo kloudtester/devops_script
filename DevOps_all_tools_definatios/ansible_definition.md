@@ -53,3 +53,48 @@ Serial:
 Ansible Conditions:
 -------------------
  * Ansible allows you to use conditions in your playbooks to control the execution of tasks based on certain conditions. There are several conditional statements available in Ansible, such as when, failed_when, changed_when, and register.
+  
+Ansible Loops:
+----------------
+ * In Ansible, loops are used to repeat a task multiple times with different values. Loops can be used in playbooks and templates to perform actions on multiple items in a list or dictionary.
+
+There are two types of loops in Ansible:
+
+with_items:
+-----------
+*  used to loop over a list of items, with each iteration using the current item in the list.
+with_dict:
+----------
+*  used to loop over the items in a dictionary, with each iteration using the key and value of the current item.
+
+Ansible Forks:
+--------------
+ * In Ansible, the forks setting controls the number of parallel or simultaneous tasks that can be executed on the target hosts.
+
+Ansible Looksups:
+-----------------
+ * Ansible lookups are a feature that allow you to retrieve values from external data sources.
+example:
+```yml
+- name: Use contents of a file
+  debug:
+    msg: "{{ lookup('file', '/path/to/file') }}"
+
+```
+
+Ansible Tags:
+-------------
+ * Tags in Ansible are a way to organize and control the execution of tasks in a playbook. Tasks can be assigned one or more tags, and when a playbook is executed, only tasks with specified tags will be run.
+
+Ansible Vaults:
+---------------
+ * Ansible Vaults are a feature that allow you to store sensitive information, such as passwords or secret keys, securely in your playbooks. The information is encrypted using AES 256-bit encryption and can only be decrypted using a vault password.
+
+Ansible Handlers:
+-----------------
+ * Ansible handlers are a type of task in Ansible that are used to trigger actions based on the state of other tasks.
+
+Ansible Flush Handlers:
+-----------------------
+ * Ansible handlers are like special tasks that only run if notified by other tasks. "Flushing" handlers means telling Ansible to run these special tasks if they have been notified. In simple terms, flushing handlers means executing the tasks that have been marked to run only under certain conditions.
+
