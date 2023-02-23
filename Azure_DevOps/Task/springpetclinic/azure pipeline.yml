@@ -23,6 +23,5 @@ stages:
 pool: "satya"
 trigger:
   - main 
-
 steps:
   - script: 'ansible-playbook -i /home/sai/hosts /home/sai/pet.yml'
