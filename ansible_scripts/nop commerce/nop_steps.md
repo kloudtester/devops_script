@@ -1,4 +1,4 @@
-nop_installing_stpes:
+nop_installing_steps:
 --------------------
 * Try to install nop on ubuntu follow this link to install nopCommerce
    * [refer]https://docs.nopcommerce.com/en/installation-and-upgrading/installing-nopcommerce/installing-on-linux.html
