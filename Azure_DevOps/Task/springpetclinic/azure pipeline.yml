@@ -1,0 +1,28 @@
+pool: "Default"
+trigger:
+  - main 
+stages:
+  - stage: mavenstage
+    displayName: mavenbuild
+    jobs:
+      - job: firstjob 
+        displayName: buildjob
+        steps:
+          - task: Maven@3
+            inputs:
+              mavenPOMFile: 'pom.xml'
+              goals: 'package'
+              publishJUnitResults: true
+              testResultsFiles: '**/surefire-reports/TEST-*.xml'
+              javaHomeOption: 'path'
+              jdkDirectory: '/usr/lib/jvm/java-1.17.0-openjdk-amd64'
+              jdkVersionOption: '1.17'
+        
+
+--- 
+pool: "satya"
+trigger:
+  - main 
+
+steps:
+  - script: 'ansible-playbook -i /home/sai/hosts /home/sai/pet.yml'
