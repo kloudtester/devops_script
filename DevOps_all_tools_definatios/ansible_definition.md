@@ -4,7 +4,6 @@ Ansible:
 
 ![preview](C:\Users\pamid\OneDrive\Desktop\devops_script\DevOps_all_tools_definatios\ansible_mindmap\ansible-1.png)
 
-
 Sub-topics:
 ----------
  * Playbooks, Modules, Inventory, Variables, Tasks, Roles, Templates, Facts.
@@ -20,6 +19,23 @@ Modules:
 Inventory: 
 ---------
  * File or script defining the list of target systems for Ansible to manage.
+  * inventor in yml formate
+  * init formate
+init formate:
+```
+192.168.0.0
+198.168.1.0
+```
+* ymal formate
+```yaml
+all:
+  children:
+    webservers:
+      hosts:
+        web1.example.com:
+        web2.example.com:
+    
+```
 
 Tasks:
 ------
@@ -101,3 +117,18 @@ Ansible Flush Handlers:
 -----------------------
  * Ansible handlers are like special tasks that only run if notified by other tasks. "Flushing" handlers means telling Ansible to run these special tasks if they have been notified. In simple terms, flushing handlers means executing the tasks that have been marked to run only under certain conditions.
 
+Ansible variables:
+------------------
+ * Ansible variables are used to store values that can be reused throughout an Ansible playbook. Variables can be defined in a variety of places, such as inventory files, playbooks, or even registered from the output of a task.
+  
+Ansible configfile:
+-------------------
+ * In simple terms, the Ansible configuration file is like a set of instructions for Ansible that helps it know how to behave and what settings to use when executing playbooks.
+
+Ansible Forks:
+--------------
+ * In Ansible, "forks" refer to the number of parallel processes that can be run at the same time
+
+Ansible magic variables:
+------------------------
+ * Ansible has a set of predefined variables, known as "magic variables," that provide access to various information related to the current state of a playbook execution.

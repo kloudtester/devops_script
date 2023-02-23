@@ -1,0 +1,11 @@
+pool: 'Default'
+trigger:
+  - main
+stages:
+  - stage: 'build'
+    displayName: mavenbuild
+    jobs:
+      - job: firstjob
+        steps:
+          - task: 
+

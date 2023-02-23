@@ -1,0 +1,19 @@
+pool: "Default"
+trigger: 
+  - main
+stages:
+  - stage: mavenbuild
+    displayName: package-build
+    jobs:
+      - job: myjob
+        displayName: My First Job
+        steps:
+          - task: Maven@3
+            inputs:
+            mavenPOMFile: 'pom.xml'
+            publishJUnitResults: true
+            testResultsFiles: '**/surefire-reports/TEST-*.xml'
+            goals: 'package'
+            javaHomeOption: 'JDKVersion'
+            jdkVersionOption: '1.17'
+

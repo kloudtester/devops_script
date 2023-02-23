@@ -1,0 +1,18 @@
+
+pool: "Default"
+
+trigger:
+  - main
+
+stages: 
+  - stage: nodejs
+    displayName: installing-nodejs
+    jobs:
+      - job: nodejs
+        steps:
+          - script: sudo apt update
+          - script: sudo curl -sL https://deb.nodesource.com/setup_16.x -o /home/ubuntu/myagent/nodesource_setup.sh
+          - script: sudo bash /home/ubuntu/myagent/nodesource_setup.sh
+          - script: sudo apt update
+          - script: sudo apt install nodejs -y
+          - script: npm run build 

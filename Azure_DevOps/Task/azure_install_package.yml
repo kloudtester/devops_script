@@ -1,0 +1,22 @@
+pool:
+  name: 'Default'
+  
+trigger:
+  - develop
+parameters:
+  - name: nop
+    type: string
+    default: nop
+stages:
+  - stage: image_creation_nop
+    jobs:
+      - job: first_job
+        steps:
+          - task: Docker@2
+            inputs:
+              command: 'build'
+              Dockerfile: '**/Dockerfile'
+              repository: ${{ parameters.nop }}
+
+
+     

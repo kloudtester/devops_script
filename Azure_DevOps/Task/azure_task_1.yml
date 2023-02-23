@@ -1,0 +1,46 @@
+pool:
+  vmImage: ubuntu-latest
+trigger:
+- main 
+stages:
+  - stage: build_mac
+    jobs:
+      - job: job1
+        steps:
+          - script: 
+              - echo "1"
+              - echo "2"
+              - echo "3"
+              - echo "4"
+              - echo "5"
+
+  - stage: build_linux
+    jobs:
+      - job: job2
+        steps:
+          - script: 
+              - echo "6"
+              - echo "7"
+              - echo "8"
+              - echo "9"
+              - echo "10"
+  - stage: build_unix
+    jobs:
+      - job: job3
+        steps:
+          - script: 
+              - echo "11"
+              - echo "12"
+              - echo "13"
+              - echo "14"
+              - echo "15"
+  - stage: build_win
+    jobs:
+      - job: job4
+        steps:
+          - script: 
+              - echo "16"
+              - echo "17"
+              - echo "18"
+              - echo "19"
+              - echo "20"
