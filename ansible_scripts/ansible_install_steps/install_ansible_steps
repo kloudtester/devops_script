@@ -11,14 +11,14 @@ sudo apt install ansible -y
 4.next add same user in both master and node
      * sudo adduser <username>
      * sudo visudo <sai ALL=(ALL:ALL) NOPASSWD:ALL> this step will give under sudo 
-     * sudo vi /etc/ssh/shhd_config <enable password authentication to yes>
+     * sudo vi /etc/ssh/sshd_config <enable password authentication to yes>
      * sudo systemctl restart sshd
 5.next in master vm create hosts file it also called as inventry file and add content 2 vm private ip and save the file and login by using created user 
      * command: ssh <created username@master vm publicip>
 6.next generate the ssh key in master vm by using this command 
      * ssh-keygen 
 7.copy the generated ssh key to 2 vm by using this command 
-     * ssh-copy-id <privateip of 2 vm>
+     * ssh-copy-id <username@privateip of 2 vm>
 8.next check master is talking with workernode by using this command 
      * ansible -i hosts -m ping all (or) -k all 
 9.next try to connect the 2 vm through master vm by using this command 
