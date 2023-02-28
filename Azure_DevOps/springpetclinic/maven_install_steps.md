@@ -2,6 +2,7 @@ maven install for springpetclinic:
 ----------------------------------
  * maven 3.9.0 version refer link 
  [refer her ] https://linuxhint.com/install_apache_maven_ubuntu/
+ * we have to change the version to 3.6.3 to 3.9.0 
 
 steps:
 ------
