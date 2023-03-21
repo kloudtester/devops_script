@@ -1,0 +1,56 @@
+pipeline {
+    agent { label 'agent' }
+    parameters { choice(name: 'maven_goals', choices: ['validate', 'package', 'install'], description: '') }
+    tools {
+         jdk 'java_path'
+    }
+    stages {
+        stage('git_clone') {
+          steps{
+               git url: 'https://github.com/wakaleo/game-of-life.git',
+                   branch: 'master'
+        }
+        }
+        // stage('sonarqube') {
+        //   steps {
+        //          withSonarQubeEnv('sonar_server_id') {
+        //           sh 'mvn clean package sonar:sonar'
+        //       }
+        //     }
+        // }
+        
+        stage('maven_build') {
+          steps {
+            sh "mvn clean ${params.maven_goals}"
+        }
+        }
+        stage('jfrog'){
+            steps {
+                rtMavenDeployer (
+                    id: 'jfrog_id',
+                    serverId: 'jfrog_server_id',
+                    releaseRepo: 'libs-release',
+                    snapshotRepo: 'libs-snapshot'
+                )
+            }
+        }
+        stage('Exec Maven') {
+            steps {
+                rtMavenRun (
+                    tool: 'MAVEN_TOOL', // Tool name from Jenkins configuration
+                    pom: 'pom.xml',
+                    goals: "clean ${params.maven_goals}",
+                    deployerId: 'jfrog_id',
+                )
+            }
+        }
+         stage ('Publish build info') {
+            steps {
+                rtPublishBuildInfo (
+                    serverId: 'jfrog_server_id'
+                )
+            }
+        }
+
+    }
+}

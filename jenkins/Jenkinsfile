@@ -1,0 +1,70 @@
+pipeline {
+    agent { label 'agent'}
+    triggers { pollSCM('* * * * *') }
+    tools{
+        maven 'maven_cloud'
+    }
+    parameters { 
+        choice(name: 'maven_goals', choices: ['validate', 'compile', 'build' , 'package', 'install'], description: '') 
+        }
+    stages{
+        stage('vcs') {
+            steps{
+                git url: 'https://github.com/spring-projects/spring-petclinic.git',
+                    branch: 'main'
+            }
+        }
+        stage('sonar') {
+            steps {
+              withSonarQubeEnv('sonar_cloud_sai') {
+                sh 'mvn clean package sonar:sonar'
+              }
+            }
+        }
+        stage('build') {
+            steps{
+                sh "mvn clean ${params.maven_goals}"
+            }
+        }
+        
+        stage('archive') {
+            steps{
+                archiveArtifacts artifacts: '**/target/*.jar',
+                onlyIfSuccessful: true
+            }
+        }
+        stage('junit') {
+            steps{
+                junit testResults : '**/surefire-reports/TEST-*.xml'
+            }
+        }
+        stage ('Artifactory configuration') {
+            steps {
+                
+
+                rtMavenDeployer (
+                    id: "jfrog", // credential id
+                    serverId: "jfrog_cloud_configure", // configure_system_id
+                    releaseRepo: 'libs-release',
+                    snapshotRepo: 'libs-snapshot'
+                )
+
+            }
+        }
+        stage('maven'){
+            steps {
+                rtMavenRun (
+                    tool: 'maven_cloud',
+                    pom: 'pom.xml',
+                    goals: "mvn clean  ${params.maven_goals}",
+                    deployerId: "jfrog"
+
+                )
+                rtPublishBuildInfo (
+                    serverId: "jfrog_cloud_configure"
+                )
+            }
+        }
+   
+}
+}

@@ -1,0 +1,31 @@
+pipeline {
+    agent {label 'JDK17_SPC'}
+    stages{
+        stage('vcs') {
+            steps {
+                git url: 'https://github.com/spring-projects/spring-petclinic.git',
+                branch: 'main'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'mvn package'
+            }
+        }
+        stage('creating directory') {
+            steps {
+                sh """
+                FOLDER=/tmp/archive/${JOB_NAME}/${BUILD_ID}
+                mkdir -p ${FOLDER}
+                """
+            }
+        }
+        stage ('copying jar files') {
+            steps {
+               sh '/home/ubuntu/root/workspace/SPC1/target/spring-petclinic-3.0.0-SNAPSHOT.jar ${FOLDER}/spring-petclinic-3.0.0-SNAPSHOT.jar'
+
+            }
+        }
+            
+        }
+    }

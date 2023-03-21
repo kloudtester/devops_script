@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+    stages{
+        stage('open mrs') {
+            steps {
+                git url : 'https://github.com/openmrs/openmrs-core.git',
+                branch: 'master'  
+          }
+            
+        }
+        stage('path'){
+            steps{
+                sh 'export PATH="/usr/lib/jvm/java-11-openjdk-amd64:$PATH" '
+                sh '${MAVEN_HOME}opt/apache-maven-3.8.7/bin/mvn'                  
+            }
+        }
+        stage('package'){
+            steps {
+                sh 'mvn package'
+            }
+        }
+    }
+}
